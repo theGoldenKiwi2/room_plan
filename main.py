@@ -11,7 +11,7 @@ IMG_PATH = 'map/AAC_006.jpg'
 CSV_PATH = 'coord.csv'
 FONT_PATH = 'NotoSans-Bold.ttf'
 EXPORT_PATH = 'export.jpg'
-DRAW_SHAPE = 'circle'  # "circle" ou "square"
+DRAW_SHAPE = 'circle'  # "circle" or "square"
 
 def choose_mode():
     result = {"mode": None, "prefix": ""}
@@ -67,10 +67,10 @@ if mode == "préfix":
 
 counter = 1
 letters = list(string.ascii_uppercase)
+points_history = []
 
 if os.path.isfile(CSV_PATH):
     os.remove(CSV_PATH)
-
 
 img_cv2 = cv2.imread(IMG_PATH)
 img_display = img_cv2.copy()
@@ -87,6 +87,41 @@ font_size = int(15 * scale_text)
 font = ImageFont.truetype(FONT_PATH, font_size)
 
 draw = ImageDraw.Draw(img_pil)
+
+def redraw_all_points():
+    """Reconstruit l'image avec tous les points de l'historique."""
+    global img_display_resized, img_pil, draw
+
+    img_display_resized = cv2.resize(img_cv2.copy(), (int(width * scale), int(height * scale)))
+    img_pil = Image.open(IMG_PATH)
+    draw = ImageDraw.Draw(img_pil)
+
+    for x, y, label in points_history:
+        x_scaled = int(x * scale)
+        y_scaled = int(y * scale)
+        radius_display = int(22 * scale)
+        font_scale = max(0.5, min(2.5, scale_text))
+        cv2.circle(img_display_resized, (x_scaled, y_scaled), radius_display, (0, 0, 255), -1)
+        cv2.putText(img_display_resized, label, (x_scaled - 10, y_scaled + 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), int(font_scale * 1.5))
+
+        radius_pil = 22
+        if DRAW_SHAPE == "circle":
+            draw.ellipse([(x - radius_pil, y - radius_pil),
+                          (x + radius_pil, y + radius_pil)],
+                         fill='white', outline='black', width=2)
+        elif DRAW_SHAPE == "square":
+            draw.rectangle([(x - radius_pil, y - radius_pil),
+                            (x + radius_pil, y + radius_pil)],
+                           fill='white', outline='black', width=2)
+        draw.text((x, y), label, fill='red', anchor='mm', font=font)
+
+def save_csv():
+    """Réécrit le CSV à partir de l'historique."""
+    with open(CSV_PATH, 'w', newline='') as f:
+        writer = csv.writer(f)
+        for point in points_history:
+            writer.writerow(point)
 
 def click_event(event, x, y, flags, params):
     global counter
@@ -112,41 +147,31 @@ def click_event(event, x, y, flags, params):
 
         print(f"Point placé : ({x_original}, {y_original}) -> {label}")
 
-        # Enregistrement CSV
-        with open(CSV_PATH, 'a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([x_original, y_original, label])
-
-        radius_display = int(22 * scale)
-        font_scale = max(0.5, min(2.5, scale_text))
-        cv2.circle(img_display_resized, (x, y), radius_display, (0, 0, 255), -1)
-        cv2.putText(img_display_resized, label, (x - 10, y + 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), int(font_scale * 1.5))
-
-        radius_pil = 22
-        if DRAW_SHAPE == "circle":
-            draw.ellipse([(x_original - radius_pil, y_original - radius_pil),
-                          (x_original + radius_pil, y_original + radius_pil)],
-                         fill='white', outline='black', width=2)
-        elif DRAW_SHAPE == "square":
-            draw.rectangle([(x_original - radius_pil, y_original - radius_pil),
-                            (x_original + radius_pil, y_original + radius_pil)],
-                           fill='white', outline='black', width=2)
-
-        draw.text((x_original, y_original), label, fill='red', anchor='mm', font=font)
+        points_history.append((x_original, y_original, label))
+        save_csv()
+        redraw_all_points()
 
         counter += 1
 
 cv2.namedWindow('Point Coordinates')
 cv2.setMouseCallback('Point Coordinates', click_event)
 
-print("Clique sur l'image pour placer les points. Appuie sur ESC pour terminer.")
+print("Clique sur l'image pour placer les points. Appuie sur ESC pour terminer, 'u' pour annuler le dernier point.")
 
 while True:
     cv2.imshow('Point Coordinates', img_display_resized)
     key = cv2.waitKey(1) & 0xFF
     if key == 27:  # ESC
         break
+    elif key == ord('u'):  # Undo
+        if points_history:
+            removed = points_history.pop()
+            counter -= 1
+            print(f"Annulé : {removed}")
+            save_csv()
+            redraw_all_points()
+        else:
+            print("Aucun point à annuler.")
 
 cv2.destroyAllWindows()
 
