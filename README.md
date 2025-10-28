@@ -95,7 +95,7 @@ Une image annotée export.jpg est enregistrée.
 
 Installe les dépendances nécessaires avec :
 
-`pip install -r requirements`
+`pip install -r requirements.txt`
 
 
  Le module tkinter est inclus par défaut avec Python sur la plupart des systèmes (notamment Ubuntu et macOS).
