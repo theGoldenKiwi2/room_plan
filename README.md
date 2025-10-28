@@ -1,8 +1,8 @@
 """(c) All rights reserved. ECOLE POLYTECHNIQUE FEDERALE DE LAUSANNE, Switzerland, CePro & CMS, 2025"""
 
-# Outil d’annotation de carte (ECOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE)
+# Outil d’annotation de carte (ÉCOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE)
 
-© 2025 — **ECOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE (EPFL)**  
+© 2025 — **ÉCOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE (EPFL)**  
 **Développé par :** *Samuel Dubuis* et *Lucile Pinard*  
 **CePro & CMS**
 
