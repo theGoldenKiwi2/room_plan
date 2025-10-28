@@ -99,16 +99,15 @@ Installe les dépendances nécessaires avec :
 
 
  Le module tkinter est inclus par défaut avec Python sur la plupart des systèmes (notamment Ubuntu et macOS).
-Si ce n’est pas le cas :
 
 
 ## Crédits
 
 Script développé par :
 
-Samuel Dubuis
+**Samuel Dubuis, CMS**
 
-Lucile Pinard
+**Lucile Pinard, CePro**
 
 (c) 2025 — ECOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE (EPFL), CePro & CMS
 Tous droits réservés.
