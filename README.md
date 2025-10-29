@@ -1,8 +1,8 @@
 """(c) All rights reserved. ECOLE POLYTECHNIQUE FEDERALE DE LAUSANNE, Switzerland, CePro & CMS, 2025"""
 
-# Outil d’annotation de carte (ECOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE)
+# Outil d’annotation de carte (ÉCOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE)
 
-© 2025 — **ECOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE (EPFL)**  
+© 2025 — **ÉCOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE (EPFL)**  
 **Développé par :** *Samuel Dubuis* et *Lucile Pinard*  
 **CePro & CMS**
 
@@ -95,20 +95,19 @@ Une image annotée export.jpg est enregistrée.
 
 Installe les dépendances nécessaires avec :
 
-`pip install -r requirements`
+`pip install -r requirements.txt`
 
 
  Le module tkinter est inclus par défaut avec Python sur la plupart des systèmes (notamment Ubuntu et macOS).
-Si ce n’est pas le cas :
 
 
 ## Crédits
 
 Script développé par :
 
-Samuel Dubuis
+**Samuel Dubuis, CMS**
 
-Lucile Pinard
+**Lucile Pinard, CePro**
 
 (c) 2025 — ECOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE (EPFL), CePro & CMS
 Tous droits réservés.
