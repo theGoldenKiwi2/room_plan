@@ -7,32 +7,36 @@ import tkinter as tk
 from tkinter import simpledialog, StringVar, Label, Entry, Button, Radiobutton, W
 import string
 
-# paths and settings
-IMG_PATH = 'map/AAC_006.jpg'
-CSV_PATH = 'coord.csv'
-FONT_PATH = 'NotoSans-Bold.ttf'
-EXPORT_PATH = 'export.jpg'
-DRAW_SHAPE = 'circle'  # "circle" or "square"
+# === Paths and basic settings ===
+IMG_PATH = 'map/AAC_006.jpg'       # Input image to annotate
+CSV_PATH = 'coord.csv'             # CSV file to save coordinates and labels
+FONT_PATH = 'NotoSans-Bold.ttf'    # Font used to draw text on the image
+EXPORT_PATH = 'export.jpg'         # Output image file
+DRAW_SHAPE = 'circle'              # Shape of the marker: "circle" or "square"
 
 def choose_mode():
     result = {"mode": None, "prefix": ""}
 
     def validate():
+        """Called when the user clicks 'Validate'."""
         mode = mode_var.get()
         result["mode"] = mode
         if mode == "préfix":
+            # Require a prefix if 'prefix' mode is selected
             prefix = entry_prefix.get().strip()
             if not prefix:
                 label_error.config(text="Le préfixe ne peut pas être vide.")
                 return
             result["prefix"] = prefix
-        window.destroy()
+        window.destroy()  # Close the window after validation
 
     window = tk.Tk()
     window.title("Choix du mode de numérotation")
 
+    # Default mode is 'chiffres' (numbers)
     mode_var = StringVar(value="chiffres")
 
+    # Create radio buttons for each mode
     for m in ["chiffres", "lettres", "manuel", "préfix"]:
         Radiobutton(window, text=m.capitalize(), variable=mode_var, value=m).pack(anchor=W)
 
@@ -41,6 +45,7 @@ def choose_mode():
     label_error = Label(window, text="", fg="red")
 
     def update_entry(*args):
+        """Show or hide the prefix input depending on the selected mode."""
         if mode_var.get() == "préfix":
             label_prefix.pack(anchor=W)
             entry_prefix.pack(anchor=W)
@@ -51,6 +56,7 @@ def choose_mode():
 
     mode_var.trace_add("write", update_entry)
 
+    # Hide prefix input by default
     label_prefix.pack_forget()
     entry_prefix.pack_forget()
 
@@ -66,10 +72,11 @@ print(f"Mode sélectionné : {mode}")
 if mode == "préfix":
     print(f"Préfixe utilisé : {prefix_global}")
 
-counter = 1
+counter = 1                     # Used to increment labels
 letters = list(string.ascii_uppercase)
-points_history = []
+points_history = []              # Stores all (x, y, label)
 
+# Remove old CSV file if it exists
 if os.path.isfile(CSV_PATH):
     os.remove(CSV_PATH)
 
@@ -78,19 +85,23 @@ img_display = img_cv2.copy()
 img_pil = Image.open(IMG_PATH)
 
 height, width = img_cv2.shape[:2]
+
+# Resize image for display if too big
 screen_width = 1280
 screen_height = 800
 scale = min(screen_width / width, screen_height / height, 1.0)
 img_display_resized = cv2.resize(img_display, (int(width * scale), int(height * scale)))
 
+# Font scaling depending on image height
 scale_text = height / 1000
 font_size = int(15 * scale_text)
 font = ImageFont.truetype(FONT_PATH, font_size)
 
 draw = ImageDraw.Draw(img_pil)
 
+
 def redraw_all_points():
-    """Reconstruit l'image avec tous les points de l'historique."""
+    """Rebuild the displayed and saved image with all points."""
     global img_display_resized, img_pil, draw
 
     img_display_resized = cv2.resize(img_cv2.copy(), (int(width * scale), int(height * scale)))
@@ -98,14 +109,18 @@ def redraw_all_points():
     draw = ImageDraw.Draw(img_pil)
 
     for x, y, label in points_history:
+        # Scale coordinates for the OpenCV window
         x_scaled = int(x * scale)
         y_scaled = int(y * scale)
+
+        # Draw filled circle and label in the OpenCV preview
         radius_display = int(22 * scale)
         font_scale = max(0.5, min(2.5, scale_text))
         cv2.circle(img_display_resized, (x_scaled, y_scaled), radius_display, (0, 0, 255), -1)
         cv2.putText(img_display_resized, label, (x_scaled - 10, y_scaled + 10),
                     cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), int(font_scale * 1.5))
 
+        # Draw corresponding marker in the saved PIL image
         radius_pil = 22
         if DRAW_SHAPE == "circle":
             draw.ellipse([(x - radius_pil, y - radius_pil),
@@ -118,19 +133,22 @@ def redraw_all_points():
         draw.text((x, y), label, fill='red', anchor='mm', font=font)
 
 def save_csv():
-    """Réécrit le CSV à partir de l'historique."""
+    """Save all coordinates and labels into a CSV file."""
     with open(CSV_PATH, 'w', newline='') as f:
         writer = csv.writer(f)
         for point in points_history:
             writer.writerow(point)
 
 def click_event(event, x, y, flags, params):
+    """Handle clicks on the image to place labeled points."""
     global counter
 
     if event == cv2.EVENT_LBUTTONDOWN:
+        # Convert click coordinates to original image scale
         x_original = int(x / scale)
         y_original = int(y / scale)
 
+        # Choose the label depending on the selected mode
         if mode == "manuel":
             label = simpledialog.askstring("Saisie manuelle", f"Texte pour le point ({x}, {y}) ?")
             if not label:
@@ -148,11 +166,13 @@ def click_event(event, x, y, flags, params):
 
         print(f"Point placé : ({x_original}, {y_original}) -> {label}")
 
+        # Store and save the point
         points_history.append((x_original, y_original, label))
         save_csv()
         redraw_all_points()
 
         counter += 1
+
 
 cv2.namedWindow('Point Coordinates')
 cv2.setMouseCallback('Point Coordinates', click_event)
@@ -164,7 +184,7 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key == 27:  # ESC
         break
-    elif key == ord('u'):  # Undo
+    elif key == ord('u'):  # Undo last point
         if points_history:
             removed = points_history.pop()
             counter -= 1
