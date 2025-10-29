@@ -10,10 +10,10 @@
 
 ## Description
 
-Ce script Python permet de **placer des points numérotés ou étiquetés sur une image** (par exemple une carte de salle ou un plan) à l’aide de la souris.  
+Ce script Python permet de **placer des points numérotés ou étiquetés sur une image** (par exemple un plan) à l’aide de la souris.  
 Chaque clic enregistre les coordonnées et l’étiquette du point dans un fichier CSV, et génère une **image annotée** finale.
 
-L’outil a été conçu pour faciliter la création de cartes d’examens ou de plans de salle au CePro, EPFL.
+L’outil a été conçu pour faciliter la création de plans de salle à l'EPFL.
 
 ---
 
@@ -57,7 +57,7 @@ Exemple :
 `620, 480, B`
 `700, 300, C`
 
-Utilisation
+## Utilisation
 Préparer le dossier
 
 Place le script dans un dossier contenant :
