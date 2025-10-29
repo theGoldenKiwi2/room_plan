@@ -62,9 +62,19 @@ Préparer le dossier
 
 Place le script dans un dossier contenant :
 
-ton image (par ex. AAC_006.jpg)
+- séléctionnner l'image dans le dossier "map"
 
-une police TrueType (.ttf) — par défaut : NotoSans-Bold.ttf
+- changer le nom de l'image à la ligne 11 (par ex. map/AAC_006.jpg)
+
+- une police TrueType (.ttf) — par défaut : NotoSans-Bold.ttf
+
+## Dépendances
+
+Installe les dépendances nécessaires avec :
+
+`pip install -r requirements.txt`
+
+ Le module tkinter est inclus par défaut avec Python sur la plupart des systèmes (notamment Ubuntu et macOS).
 
 ## Lancer le script
 `python3 main.py`
@@ -90,15 +100,6 @@ Appuie sur :
 
 Un fichier coord.csv est généré avec les coordonnées.
 Une image annotée export.jpg est enregistrée.
-
-## Dépendances
-
-Installe les dépendances nécessaires avec :
-
-`pip install -r requirements.txt`
-
-
- Le module tkinter est inclus par défaut avec Python sur la plupart des systèmes (notamment Ubuntu et macOS).
 
 
 ## Crédits
