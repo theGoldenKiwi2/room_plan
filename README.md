@@ -1,6 +1,6 @@
 """(c) All rights reserved. ECOLE POLYTECHNIQUE FEDERALE DE LAUSANNE, Switzerland, CePro & CMS, 2025"""
 
-# Outil d’annotation de carte (ÉCOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE)
+# Outil d’annotation de plan de salle (ÉCOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE)
 
 © 2025 — **ÉCOLE POLYTECHNIQUE FÉDÉRALE DE LAUSANNE (EPFL)**  
 **Développé par :** *Samuel Dubuis* et *Lucile Pinard*  
@@ -10,10 +10,10 @@
 
 ## Description
 
-Ce script Python permet de **placer des points numérotés ou étiquetés sur une image** (par exemple une carte de salle ou un plan) à l’aide de la souris.  
+Ce script Python permet de **placer des points numérotés ou étiquetés sur une image** (par exemple un plan) à l’aide de la souris.  
 Chaque clic enregistre les coordonnées et l’étiquette du point dans un fichier CSV, et génère une **image annotée** finale.
 
-L’outil a été conçu pour faciliter la création de cartes d’examens ou de plans de salle au CePro, EPFL.
+L’outil a été conçu pour faciliter la création de plans de salle à l'EPFL.
 
 ---
 
@@ -57,14 +57,24 @@ Exemple :
 `620, 480, B`
 `700, 300, C`
 
-Utilisation
+## Utilisation
 Préparer le dossier
 
 Place le script dans un dossier contenant :
 
-ton image (par ex. AAC_006.jpg)
+- séléctionnner l'image dans le dossier "map"
 
-une police TrueType (.ttf) — par défaut : NotoSans-Bold.ttf
+- changer le nom de l'image à la ligne 11 (par ex. map/AAC_006.jpg)
+
+- une police TrueType (.ttf) — par défaut : NotoSans-Bold.ttf
+
+## Dépendances
+
+Installe les dépendances nécessaires avec :
+
+`pip install -r requirements.txt`
+
+ Le module tkinter est inclus par défaut avec Python sur la plupart des systèmes (notamment Ubuntu et macOS).
 
 ## Lancer le script
 `python3 main.py`
@@ -90,15 +100,6 @@ Appuie sur :
 
 Un fichier coord.csv est généré avec les coordonnées.
 Une image annotée export.jpg est enregistrée.
-
-## Dépendances
-
-Installe les dépendances nécessaires avec :
-
-`pip install -r requirements.txt`
-
-
- Le module tkinter est inclus par défaut avec Python sur la plupart des systèmes (notamment Ubuntu et macOS).
 
 
 ## Crédits
