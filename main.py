@@ -8,8 +8,8 @@ from tkinter import simpledialog, StringVar, Label, Entry, Button, Radiobutton, 
 import string
 
 # === Paths and basic settings ===
-IMG_PATH = 'map/AAC_006.jpg'       # Input image to annotate
-CSV_PATH = 'coord.csv'             # CSV file to save coordinates and labels
+IMG_PATH = 'map/CM_1121.jpg'       # Input image to annotate
+CSV_PATH = 'coord.csv'  # CSV file to save coordinates and labels
 FONT_PATH = 'NotoSans-Bold.ttf'    # Font used to draw text on the image
 EXPORT_PATH = 'export.jpg'         # Output image file
 DRAW_SHAPE = 'circle'              # Shape of the marker: "circle" or "square"
@@ -94,7 +94,7 @@ img_display_resized = cv2.resize(img_display, (int(width * scale), int(height * 
 
 # Font scaling depending on image height
 scale_text = height / 1000
-font_size = int(15 * scale_text)
+font_size = int(50 * scale_text)
 font = ImageFont.truetype(FONT_PATH, font_size)
 
 draw = ImageDraw.Draw(img_pil)
@@ -114,30 +114,28 @@ def redraw_all_points():
         y_scaled = int(y * scale)
 
         # Draw filled circle and label in the OpenCV preview
-        radius_display = int(32 * scale)
-        font_scale = max(0.5, min(2.5, scale_text))
+        radius_display = int(20 * scale)
+        font_scale = max(0.4, min(1.2, scale_text))
         cv2.circle(img_display_resized, (x_scaled, y_scaled), radius_display, (0, 0, 255), -1)
         cv2.putText(img_display_resized, label, (x_scaled - 10, y_scaled + 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), int(font_scale * 1.5))
+                    cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), 1)
 
         # Draw corresponding marker in the saved PIL image
         radius_pil = 52
         if DRAW_SHAPE == "circle":
             draw.ellipse([(x - radius_pil, y - radius_pil),
-                          (x + radius_pil, y + radius_pil)],
-                         fill='white', outline='black', width=2)
+                          (x + radius_pil, y + radius_pil)])
         elif DRAW_SHAPE == "square":
             draw.rectangle([(x - radius_pil, y - radius_pil),
-                            (x + radius_pil, y + radius_pil)],
-                           fill='white', outline='black', width=2)
+                            (x + radius_pil, y + radius_pil)])
         draw.text((x, y), label, fill='red', anchor='mm', font=font)
 
 def save_csv():
-    """Save all coordinates and labels into a CSV file."""
+    """Save only coordinates (x, y) into the CSV file (no label)."""
     with open(CSV_PATH, 'w', newline='') as f:
         writer = csv.writer(f)
-        for point in points_history:
-            writer.writerow(point)
+        for x, y, label in points_history:
+            writer.writerow([x, y])
 
 def click_event(event, x, y, flags, params):
     """Handle clicks on the image to place labeled points."""
